@@ -1,52 +1,18 @@
-using System;
 using Messaging;
-using Messaging.Message;
 using UnityEngine;
 
 namespace HBUnityGameCore
 {
-    public enum GameEventType
-    {
-        Begin,
-        End,
-        Pause,
-        Resume
-    }
-
-    public class GameMessage : IMessage
-    {
-        private GameEventType _gameEventType;
-        private readonly float _sinceStartupTimeStamp;
-        private readonly DateTime _utcTimeStamp;
-
-        public GameMessage(GameEventType gameEventType)
-        {
-            _gameEventType = gameEventType;
-            _sinceStartupTimeStamp = Time.realtimeSinceStartup;
-            _utcTimeStamp = System.DateTime.UtcNow;
-        }
-    }
-
     public class GameEventBroadcastManager : MonoBehaviour
     {
-        public static readonly Bus GameEventBus = new();
-        public static readonly Bus AnalyticsEventBus = new();
-        public static readonly Bus WorldEventBus = new();
-        public static readonly Bus PlayerEventBus = new();
-        public static readonly Bus EnemyEventBus = new();
-        public static readonly Bus ItemEventBus = new();
-        public static readonly Bus UIEventBus = new();
-        public static readonly Bus AchievementEventBus = new();
-        public static readonly Bus LeaderboardEventBus = new();
-        public static readonly Bus SocialEventBus = new();
-        public static readonly Bus AudioEventBus = new();
-        public static readonly Bus VideoEventBus = new();
-        public static readonly Bus NotificationEventBus = new();
-        public static readonly Bus ProfileEventBus = new();
-        public static readonly Bus TimeEventBus = new();
-        public static readonly Bus WeatherEventBus = new();
-        public static readonly Bus EnvironmentEventBus = new();
-        public static readonly Bus EffectEventBus = new();
+        public Bus GameEventBus = new();
+        public Bus AnalyticsEventBus = new();
+        public Bus RewardEventBus = new();
+        public Bus WorldEventBus = new();
+        public Bus PlayerEventBus = new();
+        public Bus AchievementEventBus = new();
+        public Bus SocialEventBus = new();
+        public Bus NotificationEventBus = new();
 
         private static GameEventBroadcastManager _instance;
 
@@ -96,32 +62,39 @@ namespace HBUnityGameCore
             }
         }
 
-        void GameBegin()
+        public void GiveReward(GameRewardType rewardType, uint amount)
+        {
+            Debug.Log("Reward awarded!");
+            _instance.RewardEventBus.emit(new RewardMessage(rewardType, amount));
+        }
+
+        public void GameBegin()
         {
             Debug.Log("Game began!");
             GameEventBus.emit(new GameMessage(GameEventType.Begin));
             AnalyticsEventBus.emit(new GameMessage(GameEventType.Begin));
         }
 
-        void GameEnd()
+        public void GameEnd()
         {
             Debug.Log("Game ended!");
             GameEventBus.emit(new GameMessage(GameEventType.End));
             AnalyticsEventBus.emit(new GameMessage(GameEventType.End));
         }
 
-        void GamePause()
+        public void GamePause()
         {
             Debug.Log("Game paused!");
             GameEventBus.emit(new GameMessage(GameEventType.Pause));
             AnalyticsEventBus.emit(new GameMessage(GameEventType.Pause));
         }
 
-        void GameResume()
+        public void GameResume()
         {
             Debug.Log("Game resumed!");
             GameEventBus.emit(new GameMessage(GameEventType.Resume));
             AnalyticsEventBus.emit(new GameMessage(GameEventType.Resume));
         }
     }
+
 }
