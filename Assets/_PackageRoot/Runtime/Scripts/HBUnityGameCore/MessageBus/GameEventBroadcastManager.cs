@@ -1,8 +1,14 @@
-using Messaging;
 using UnityEngine;
 
 namespace HBUnityGameCore
 {
+    public class Bus
+    {
+        public void emit(IMessage message)
+        {
+        }
+    }
+    
     public class GameEventBroadcastManager : MonoBehaviour
     {
         public Bus GameEventBus = new();

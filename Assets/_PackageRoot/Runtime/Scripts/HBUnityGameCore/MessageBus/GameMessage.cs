@@ -1,9 +1,12 @@
 using System;
-using Messaging.Message;
 using UnityEngine;
 
 namespace HBUnityGameCore
 {
+    public class IMessage
+    {
+    }
+    
     public enum GameEventType
     {
         Begin,
