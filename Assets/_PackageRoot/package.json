@@ -1,0 +1,9 @@
+{
+    "name": "com.honourboundgamestudio.HBUnityGameCore.unity",
+    "displayName": "Honour Bound Unity Game Core",
+    "version": "0.0.1",
+    "unity": "2023.2",
+    "description": "A Unity package that will help you develop unity games.",
+	"author": { "name": "Richard Lalacette", "url": "https://honoudboundgamestudios.com" },
+	"dependencies": {}
+}
