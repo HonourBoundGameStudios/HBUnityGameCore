@@ -1,9 +1,7 @@
 {
     "name": "com.honourboundgamestudios.hbunitygamecore.unity.Runtime",
     "rootNamespace": "",
-    "references": [
-        "GUID:babab0b01234dedebebedeadbeefbaba"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
