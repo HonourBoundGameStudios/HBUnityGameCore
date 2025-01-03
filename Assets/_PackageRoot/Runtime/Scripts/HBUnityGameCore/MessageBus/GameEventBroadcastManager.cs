@@ -5,9 +5,9 @@ namespace HBUnityGameCore
 {
     public class Receiver<T>
     {
-        public void OnMessageRecieved(T message)
+        public void OnMessageReceived(T message)
         {
-            Console.WriteLine("Event received: " + message);
+            Console.WriteLine("Message received: " + message);
         }
     }
 
@@ -45,13 +45,12 @@ namespace HBUnityGameCore
             Receiver<RewardMessage> receiver = new Receiver<RewardMessage>();
 
             // Subscribe to the event
-            bus.Subscribe(receiver.OnMessageRecieved);
+            bus.Subscribe(receiver.OnMessageReceived);
 
             // Trigger the event
             bus.Emit(new RewardMessage(GameRewardType.Gold, 100));
         }
     }
-
 
     public class GameEventBroadcastManager : MonoBehaviour
     {
