@@ -1,7 +1,7 @@
 {
     "name": "com.honourboundgamestudio.hbunitygamecore.unity",
     "displayName": "Honour Bound Unity Game Core",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "unity": "2023.2",
     "license": "MIT",
     "description": "A Unity package that will help you develop unity games.",
