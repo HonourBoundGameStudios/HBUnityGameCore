@@ -1,24 +1,68 @@
+using System;
 using UnityEngine;
 
 namespace HBUnityGameCore
 {
-    public class Bus
+    public class Receiver<T>
     {
-        public void emit(IMessage message)
+        public void OnMessageRecieved(T message)
         {
+            Console.WriteLine("Event received: " + message);
         }
     }
-    
+
+    public class Bus<T>
+    {
+        public delegate void MyMessageHandler(T message);
+
+        // Declare the event using the delegate
+        public event MyMessageHandler HandleMessage;
+
+        // Method to raise the event
+        public void Emit(T message)
+        {
+            // Check if there are any subscribers
+            if (HandleMessage != null)
+            {
+                HandleMessage(message);
+            }
+        }
+
+        // Method to subscribe to the event
+        public void Subscribe(MyMessageHandler messageHandler)
+        {
+            HandleMessage += messageHandler;
+        }
+    }
+
+
+    class Test
+    {
+        void TestSomething(string[] args)
+        {
+            // Create instances of publisher and subscriber
+            Bus<RewardMessage> bus = new Bus<RewardMessage>();
+            Receiver<RewardMessage> receiver = new Receiver<RewardMessage>();
+
+            // Subscribe to the event
+            bus.Subscribe(receiver.OnMessageRecieved);
+
+            // Trigger the event
+            bus.Emit(new RewardMessage(GameRewardType.Gold, 100));
+        }
+    }
+
+
     public class GameEventBroadcastManager : MonoBehaviour
     {
-        public Bus GameEventBus = new();
-        public Bus AnalyticsEventBus = new();
-        public Bus RewardEventBus = new();
-        public Bus WorldEventBus = new();
-        public Bus PlayerEventBus = new();
-        public Bus AchievementEventBus = new();
-        public Bus SocialEventBus = new();
-        public Bus NotificationEventBus = new();
+        public Bus<GameMessage> GameEventBus = new();
+        public Bus<AnalyticMessage> AnalyticsEventBus = new();
+        public Bus<RewardMessage> RewardEventBus = new();
+        // public Bus WorldEventBus = new();
+        // public Bus PlayerEventBus = new();
+        // public Bus AchievementEventBus = new();
+        // public Bus SocialEventBus = new();
+        // public Bus NotificationEventBus = new();
 
         private static GameEventBroadcastManager _instance;
 
@@ -34,16 +78,6 @@ namespace HBUnityGameCore
                 if (_instance == null)
                 {
                     _instance = (GameEventBroadcastManager)FindObjectOfType(typeof(GameEventBroadcastManager));
-
-                    GameEventBroadcastManager[] gameEventBroadcastManagers = FindObjectsByType<GameEventBroadcastManager>(FindObjectsSortMode.None);
-
-                    if (gameEventBroadcastManagers.Length > 1)
-                    {
-                        Debug.LogError("[Singleton] Something went really wrong " +
-                                       " - there should never be more than 1 singleton!" +
-                                       " Reopening the scene might fix it.");
-                        return _instance;
-                    }
 
                     if (_instance == null)
                     {
@@ -71,35 +105,35 @@ namespace HBUnityGameCore
         public void GiveReward(GameRewardType rewardType, uint amount)
         {
             Debug.Log("Reward awarded!");
-            _instance.RewardEventBus.emit(new RewardMessage(rewardType, amount));
+            _instance.RewardEventBus.Emit(new RewardMessage(rewardType, amount));
         }
 
         public void GameBegin()
         {
             Debug.Log("Game began!");
-            GameEventBus.emit(new GameMessage(GameEventType.Begin));
-            AnalyticsEventBus.emit(new GameMessage(GameEventType.Begin));
+            GameEventBus.Emit(new GameMessage(GameEventType.Begin));
+            AnalyticsEventBus.Emit(new AnalyticMessage());
         }
 
         public void GameEnd()
         {
             Debug.Log("Game ended!");
-            GameEventBus.emit(new GameMessage(GameEventType.End));
-            AnalyticsEventBus.emit(new GameMessage(GameEventType.End));
+            GameEventBus.Emit(new GameMessage(GameEventType.End));
+            AnalyticsEventBus.Emit(new AnalyticMessage());
         }
 
         public void GamePause()
         {
             Debug.Log("Game paused!");
-            GameEventBus.emit(new GameMessage(GameEventType.Pause));
-            AnalyticsEventBus.emit(new GameMessage(GameEventType.Pause));
+            GameEventBus.Emit(new GameMessage(GameEventType.Pause));
+            AnalyticsEventBus.Emit(new AnalyticMessage());
         }
 
         public void GameResume()
         {
             Debug.Log("Game resumed!");
-            GameEventBus.emit(new GameMessage(GameEventType.Resume));
-            AnalyticsEventBus.emit(new GameMessage(GameEventType.Resume));
+            GameEventBus.Emit(new GameMessage(GameEventType.Resume));
+            AnalyticsEventBus.Emit(new AnalyticMessage());
         }
     }
 
