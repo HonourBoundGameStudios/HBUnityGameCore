@@ -3,7 +3,15 @@
     "displayName": "Honour Bound Unity Game Core",
     "version": "0.0.7",
     "unity": "2023.2",
+    "license": "MIT",
     "description": "A Unity package that will help you develop unity games.",
-	"author": { "name": "Honour Bound Game Studios Inc.", "url": "https://honoudboundgamestudios.com" },
-	"dependencies": {}
+	"author": 
+    { 
+        "name": "Honour Bound Game Studios Inc.", 
+        "url": "https://honoudboundgamestudios.com" 
+    },
+	"dependencies": 
+    {
+
+    }
 }
