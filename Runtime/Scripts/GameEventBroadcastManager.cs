@@ -33,6 +33,12 @@ namespace HBUnityGameCore
         {
             HandleMessage += messageHandler;
         }
+
+        // Method to unsubscribe from the event
+        public void Unsubscribe(MyMessageHandler messageHandler)
+        {
+            HandleMessage -= messageHandler;
+        }        
     }
 
 
