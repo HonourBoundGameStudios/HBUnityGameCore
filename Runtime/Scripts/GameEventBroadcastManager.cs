@@ -107,12 +107,12 @@ namespace HBUnityGameCore
             }
         }
 
-        public void GiveReward(GameRewardType rewardType, uint amount)
+        public void GiveReward(GameRewardType rewardType, uint amount, uint total)
         {
             Debug.Log("Reward awarded!");
-            _instance.RewardEventBus.Emit(new RewardMessage(rewardType, amount));
+            _instance.RewardEventBus.Emit(new RewardMessage(rewardType, amount, total));
         }
-
+        
         public void GameBegin()
         {
             Debug.Log("Game began!");
