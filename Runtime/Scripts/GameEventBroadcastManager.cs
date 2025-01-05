@@ -54,7 +54,7 @@ namespace HBUnityGameCore
             bus.Subscribe(receiver.OnMessageReceived);
 
             // Trigger the event
-            bus.Emit(new RewardMessage(GameRewardType.Gold, 100));
+            bus.Emit(new RewardMessage(GameRewardType.Gold, 100, 1000));
         }
     }
 
