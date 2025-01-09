@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="30b3f021-168f-47d0-8616-83402b2c9d40" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Runtime/Scripts/GameEventBroadcastManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Runtime/Scripts/GameEventBroadcastManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Runtime/Scripts/InventoryManagement/Editor/ItemEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Runtime/Scripts/InventoryManagement/Editor/ItemEditor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Runtime/Scripts/InventoryManagement/Item.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Runtime/Scripts/InventoryManagement/Item.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Runtime/Scripts/com.honourboundgamestudios.hbunitygamecore.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/../../Runtime/Scripts/com.honourboundgamestudios.hbunitygamecore.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../package.json" afterDir="false" />
-    </list>
+    <list default="true" id="30b3f021-168f-47d0-8616-83402b2c9d40" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
