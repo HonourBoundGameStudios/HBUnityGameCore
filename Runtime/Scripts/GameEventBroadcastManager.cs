@@ -38,7 +38,7 @@ namespace HBUnityGameCore
         public void Unsubscribe(MyMessageHandler messageHandler)
         {
             HandleMessage -= messageHandler;
-        }        
+        }
     }
 
 
@@ -82,7 +82,7 @@ namespace HBUnityGameCore
             {
                 if (_instance == null)
                 {
-                    _instance = (GameEventBroadcastManager)FindObjectOfType(typeof(GameEventBroadcastManager));
+                    _instance = (GameEventBroadcastManager)FindFirstObjectByType(typeof(GameEventBroadcastManager));
 
                     if (_instance == null)
                     {
@@ -112,7 +112,7 @@ namespace HBUnityGameCore
             Debug.Log("Reward awarded!");
             _instance.RewardEventBus.Emit(new RewardMessage(rewardType, amount, total));
         }
-        
+
         public void GameBegin()
         {
             Debug.Log("Game began!");

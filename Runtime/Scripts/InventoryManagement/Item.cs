@@ -1,40 +1,87 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Localization;
 
 [Serializable]
 [CreateAssetMenu(fileName = "New Basic Item", menuName = "Inventory/Item")]
 public class Item : ScriptableObject
 {
+    // The icon of the item that will be displayed inspector ui.
+    [Header("VISUAL REPRESENTATION")]
+
     [SerializeField]
     public Sprite icon;
 
+    // The prefab of the item that will be spawned in the world when the player picks it up.
     [SerializeField]
-    public GameObject pickup;
+    public GameObject pickupObject;
+
+    // The prefab of the item that will be displayed in the ui (Typically a 3D model).
+    [SerializeField]
+    public GameObject displayObject;
+
+    [Header("DETAILS (Localized Fields)")]
+    [SerializeField]
+    public String localizationTableName;
+
+    [Header("TITLE")]
+    [SerializeField]
+    public String titleLocalizationKey;
 
     [SerializeField]
-    public GameObject display;
+    public LocalizedString titleLocalized;
 
-    // NAME & DESCRIPTION
-    [SerializeField]
-    public String displayName;
+    private String title;
 
     [Header("DESCRIPTION")]
     [SerializeField]
-    public String itemDescription;
+    public String descriptionLocalizationKey;
 
-    // MARK UNIQUE
     [SerializeField]
-    public bool unique;
+    public LocalizedString descriptionLocalized;
 
-    // MARK AS IMPLEMENTED (Ready to be used in game)
+    private String description;
+
+    [SerializeField]
+    public bool unique; // A single instance of this item can exist in the game
+
+    [SerializeField]
+    public bool equipable; // The item can be equipped by the player
+
+    [SerializeField]
+    public bool upgradeable; // The item can be upgraded using crafting or any other gameplay means
+
+    [SerializeField]
+    public bool consumable; // The item can be consumed by the player
+
+    // All steps of implementation this item a done and
+    // the item is ready to be added to the world (Ready to be used in game)
+    // This is a flag for the developers to know what is ready to be used
     [SerializeField]
     public bool markAsImplemented;
 
-    public virtual bool UseItem() => false;
-    public virtual bool CanBeEquipped() => false;
-    public virtual bool CanBeUpgraded() => true;
+    private void Start()
+    {
+        titleLocalized = new LocalizedString(localizationTableName, titleLocalizationKey);
+        titleLocalized.TableEntryReference = titleLocalizationKey;
+        titleLocalized.StringChanged += OnTitleStringChanged;
 
-    // CRAFTING
+        descriptionLocalized = new LocalizedString(localizationTableName, descriptionLocalizationKey);
+        descriptionLocalized.TableEntryReference = descriptionLocalizationKey;
+        descriptionLocalized.StringChanged += OnDescriptionStringChanged;
+    }
+
+    private void OnDescriptionStringChanged(string updatedString)
+    {
+        title = updatedString;
+    }
+
+    private void OnTitleStringChanged(string updatedString)
+    {
+        description = updatedString;
+    }
+
+    // CRAFTING TODO
     //
     // [SerializeField, Range(1, 50)]
     // public int craftedQty = 1;

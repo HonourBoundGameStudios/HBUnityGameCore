@@ -1,7 +1,7 @@
 {
     "name": "com.honourboundgamestudios.hbunitygamecore",
-    "rootNamespace": "",
-    "references": [],
+    "rootNamespace": "HBUnityGameCore",
+    "references": ["Unity.Localization"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

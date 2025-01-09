@@ -13,6 +13,6 @@
     },
 	"dependencies": 
     {
-
+        "com.unity.localization": "1.4.5"
     }
 }
