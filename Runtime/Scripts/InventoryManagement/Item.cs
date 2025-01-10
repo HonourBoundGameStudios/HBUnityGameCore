@@ -6,25 +6,29 @@ using UnityEngine.Localization;
 [CreateAssetMenu(fileName = "New Basic Item", menuName = "Inventory/Item")]
 public class Item : ScriptableObject
 {
+    [Header("DEVELOPER PROPERTIES")]
+    [SerializeField, Tooltip("This is a flag for the developers to know what is ready to be used.")]
+    public bool markAsImplemented;
+
     [Header("VISUAL REPRESENTATION")]
-    [SerializeField]
-    public Sprite icon; // The icon of the item that will be displayed in the inspector ui.
+    [SerializeField, Tooltip("The icon of the item that will be displayed in the inspector ui.")]
+    public Sprite icon;
 
-    [SerializeField]
-    public GameObject pickupObject; // 2D or 3D object to display in the world
+    [SerializeField, Tooltip("2D or 3D object to spawn in the world and interacted with.")]
+    public GameObject pickupObject;
 
-    [SerializeField]
-    public GameObject displayObject; // 2D or 3D object to display in the UI
+    [SerializeField, Tooltip("2D or 3D object to display in the UI.")]
+    public GameObject displayObject;
 
     [Header("DETAILS (Localized Fields)")]
-    [SerializeField]
-    public String localizationTableName; // The name of the Localisation table.
+    [SerializeField, Tooltip("The name of the Localisation table. It is advisable to use one table for all game objects.")]
+    public String localizationTableName;
 
     [Header("TITLE")]
-    [SerializeField]
-    public String titleLocalizationKey; // Key used to look up the description in the localization table
+    [SerializeField, Tooltip("Key used to look up the title in the localization table.")]
+    public String titleLocalizationKey;
 
-    [SerializeField]
+    [SerializeField, Tooltip("The localized string object that will be used to display the title of the item.")]
     public LocalizedString titleLocalized;
 
     public string Title
@@ -34,10 +38,10 @@ public class Item : ScriptableObject
     }
 
     [Header("DESCRIPTION")]
-    [SerializeField]
-    public String descriptionLocalizationKey; // Key used to look up the description in the localization table
+    [SerializeField, Tooltip("Key used to look up the description in the localization table.")]
+    public String descriptionLocalizationKey;
 
-    [SerializeField]
+    [SerializeField, Tooltip("The localized string object that will be used to display the description of the item.")]
     public LocalizedString descriptionLocalized;
 
     public string Description
@@ -46,26 +50,27 @@ public class Item : ScriptableObject
         private set;
     }
 
-    [SerializeField]
-    public bool unique; // A single instance of this item can exist in the game
+    [Header("OTHER PROPERTIES")]
+    [SerializeField, Tooltip("A single instance of this item can exist in the game.")]
+    public bool unique;
 
-    [SerializeField]
-    public bool equipable; // The item can be equipped by the player
+    [SerializeField, Tooltip("A single instance of this item can exist on a player.")]
+    public bool uniquePerPlayer;
 
-    [SerializeField]
-    public bool upgradeable; // The item can be upgraded using crafting or any other gameplay means
+    [SerializeField, Tooltip("The item can be equipped by the player.")]
+    public bool equipable;
 
-    [SerializeField]
-    public bool consumable; // The item can be consumed by the player
+    [SerializeField, Tooltip("The item can be upgraded using crafting or any other gameplay means")]
+    public bool upgradeable;
 
-    [SerializeField]
-    public float weight; // The weight of the item in the inventory
+    [SerializeField, Tooltip("The item can be consumed by the player")]
+    public bool consumable;
 
-    [SerializeField]
-    public float value; // The value of the item in the currency of the game
+    [SerializeField, Tooltip("The weight of this item in game units (kg or lbs)")]
+    public float weight;
 
-    [SerializeField]
-    public bool markAsImplemented; // This is a flag for the developers to know what is ready to be used
+    [SerializeField, Tooltip("The value of this item in the game currency")]
+    public float value;
 
     private void Start()
     {
