@@ -27,7 +27,11 @@ public class Item : ScriptableObject
     [SerializeField]
     public LocalizedString titleLocalized;
 
-    private String title; // Autofill from the localized string. Not persisted.
+    public string Title
+    {
+        get;
+        private set;
+    }
 
     [Header("DESCRIPTION")]
     [SerializeField]
@@ -36,7 +40,11 @@ public class Item : ScriptableObject
     [SerializeField]
     public LocalizedString descriptionLocalized;
 
-    private String description; // Autofill from the localized string. Not persisted
+    public string Description
+    {
+        get;
+        private set;
+    }
 
     [SerializeField]
     public bool unique; // A single instance of this item can exist in the game
@@ -72,11 +80,11 @@ public class Item : ScriptableObject
 
     private void OnDescriptionStringChanged(string updatedString)
     {
-        title = updatedString;
+        Title = updatedString;
     }
 
     private void OnTitleStringChanged(string updatedString)
     {
-        description = updatedString;
+        Description = updatedString;
     }
 }
