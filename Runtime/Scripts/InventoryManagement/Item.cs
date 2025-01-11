@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Localization;
+using UnityEngine.Serialization;
 
 [Serializable]
 [CreateAssetMenu(fileName = "New Basic Item", menuName = "Inventory/Item")]
@@ -25,29 +26,36 @@ public class Item : ScriptableObject
     public String localizationTableName;
 
     [Header("TITLE")]
-    [SerializeField, Tooltip("Key used to look up the title in the localization table.")]
-    public String titleLocalizationKey;
+    [SerializeField, Tooltip("The title of the item not using localization. Leave empty if using localization.")]
+    public String titleWithoutLocalization;
 
-    [SerializeField, Tooltip("The localized string object that will be used to display the title of the item.")]
+    [SerializeField, Tooltip("The localized string object that will be used to display the title of the item. Unused if titleWithoutLocalization is set.")]
     public LocalizedString titleLocalized;
 
-    public string Title
+    public string Title()
     {
-        get;
-        private set;
+        if (titleWithoutLocalization is { Length: > 0 })
+        {
+            return titleWithoutLocalization;
+        }
+        return titleLocalized.GetLocalizedString();
     }
 
     [Header("DESCRIPTION")]
-    [SerializeField, Tooltip("Key used to look up the description in the localization table.")]
-    public String descriptionLocalizationKey;
+    [SerializeField, Tooltip("The description of the item not using localization. Leave empty if using localization.")]
+    public String descriptionWithoutLocalization;
 
-    [SerializeField, Tooltip("The localized string object that will be used to display the description of the item.")]
+    [SerializeField, Tooltip("The localized string object that will be used to display the description of the item. Unused if descriptionWithoutLocalization is set.")]
     public LocalizedString descriptionLocalized;
 
-    public string Description
+    public string Description()
     {
-        get;
-        private set;
+        if (descriptionWithoutLocalization is { Length: > 0 })
+        {
+            return descriptionLocalized.GetLocalizedString();
+        }
+
+        return descriptionWithoutLocalization;
     }
 
     [Header("OTHER PROPERTIES")]
@@ -71,25 +79,4 @@ public class Item : ScriptableObject
 
     [SerializeField, Tooltip("The value of this item in the game currency")]
     public float value;
-
-    private void Start()
-    {
-        titleLocalized = new LocalizedString(localizationTableName, titleLocalizationKey);
-        titleLocalized.TableEntryReference = titleLocalizationKey;
-        titleLocalized.StringChanged += OnTitleStringChanged;
-
-        descriptionLocalized = new LocalizedString(localizationTableName, descriptionLocalizationKey);
-        descriptionLocalized.TableEntryReference = descriptionLocalizationKey;
-        descriptionLocalized.StringChanged += OnDescriptionStringChanged;
-    }
-
-    private void OnDescriptionStringChanged(string updatedString)
-    {
-        Title = updatedString;
-    }
-
-    private void OnTitleStringChanged(string updatedString)
-    {
-        Description = updatedString;
-    }
 }
