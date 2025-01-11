@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Localization;
-using UnityEngine.Serialization;
 
 [Serializable]
 [CreateAssetMenu(fileName = "New Basic Item", menuName = "Inventory/Item")]
@@ -77,6 +76,6 @@ public class Item : ScriptableObject
     [SerializeField, Tooltip("The weight of this item in game units (kg or lbs)")]
     public float weight;
 
-    [SerializeField, Tooltip("The value of this item in the game currency")]
+    [SerializeField, Tooltip("The value of this item in the game's currency")]
     public float value;
 }
