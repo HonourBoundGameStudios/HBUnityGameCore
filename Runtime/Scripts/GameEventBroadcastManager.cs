@@ -3,23 +3,23 @@ using UnityEngine;
 
 namespace HBUnityGameCore
 {
-    public class Receiver<T>
+    public class Receiver<IMessage>
     {
-        public void OnMessageReceived(T message)
+        public void OnMessageReceived(IMessage message)
         {
             Console.WriteLine("Message received: " + message);
         }
     }
 
-    public class Bus<T>
+    public class Bus
     {
-        public delegate void MyMessageHandler(T message);
+        public delegate void MyMessageHandler(IMessage rewardMessage);
 
         // Declare the event using the delegate
         public event MyMessageHandler HandleMessage;
 
         // Method to raise the event
-        public void Emit(T message)
+        public void Emit(IMessage message)
         {
             // Check if there are any subscribers
             if (HandleMessage != null)
@@ -47,8 +47,8 @@ namespace HBUnityGameCore
         void TestSomething(string[] args)
         {
             // Create instances of publisher and subscriber
-            Bus<RewardMessage> bus = new Bus<RewardMessage>();
-            Receiver<RewardMessage> receiver = new Receiver<RewardMessage>();
+            Bus bus = new Bus();
+            Receiver<IMessage> receiver = new Receiver<IMessage>();
 
             // Subscribe to the event
             bus.Subscribe(receiver.OnMessageReceived);
@@ -63,9 +63,9 @@ namespace HBUnityGameCore
 
     public class GameEventBroadcastManager : MonoBehaviour
     {
-        public Bus<GameMessage> GameEventBus = new();
-        public Bus<AnalyticMessage> AnalyticsEventBus = new();
-        public Bus<RewardMessage> RewardEventBus = new();
+        public Bus GameEventBus = new();
+        public Bus AnalyticsEventBus = new();
+        public Bus RewardEventBus = new();
         // public Bus WorldEventBus = new();
         // public Bus PlayerEventBus = new();
         // public Bus AchievementEventBus = new();
