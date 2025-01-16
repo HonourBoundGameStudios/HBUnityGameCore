@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HBUnityGameCore
 {
-    public class AnalyticMessage : IMessage
+    public class AnalyticEvent : IEvent
     {
     }
 }

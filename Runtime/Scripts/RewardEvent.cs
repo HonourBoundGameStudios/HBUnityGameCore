@@ -8,7 +8,7 @@ namespace HBUnityGameCore
         Gold
     }
 
-    public class RewardMessage : IMessage
+    public class RewardEvent : IEvent
     {
         public GameRewardType RewardType
         {
@@ -31,7 +31,7 @@ namespace HBUnityGameCore
             get;
         }
 
-        public RewardMessage(GameRewardType gameRewardType, uint amount, uint total)
+        public RewardEvent(GameRewardType gameRewardType, uint amount, uint total)
         {
             RewardType = gameRewardType;
             Amount = amount;

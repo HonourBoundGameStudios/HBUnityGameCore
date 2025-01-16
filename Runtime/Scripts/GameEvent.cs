@@ -12,11 +12,11 @@ namespace HBUnityGameCore
         Resume
     }
 
-    public class GameMessage : IMessage
+    public class GameEvent : IEvent
     {
         private GameEventType _gameEventType;
 
-        public GameMessage(GameEventType gameEventType)
+        public GameEvent(GameEventType gameEventType)
         {
             _gameEventType = gameEventType;
         }
