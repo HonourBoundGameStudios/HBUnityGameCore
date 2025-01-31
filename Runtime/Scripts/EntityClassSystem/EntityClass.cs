@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HBUnityGameCore
@@ -7,7 +8,8 @@ namespace HBUnityGameCore
     [CreateAssetMenu(fileName = "Entity Class", menuName = "HBUnityGameCore/EntityClass")]
     public class EntityClass : BaseObjectScriptableObject
     {
-        SerializableDictionary<string, Skill> _skills;
+        [Header("SKILLS")]
+        [SerializeField, Tooltip("The skills that the entity can use.")]
+        List<Skill> _skills;
     }
-
 }
