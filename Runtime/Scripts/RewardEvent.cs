@@ -22,22 +22,12 @@ namespace HBUnityGameCore
         {
             get;
         }
-        public float SinceStartupTimeStamp
-        {
-            get;
-        }
-        public DateTime UtcTimeStamp
-        {
-            get;
-        }
 
         public RewardEvent(GameRewardType gameRewardType, uint amount, uint total)
         {
             RewardType = gameRewardType;
             Amount = amount;
             Total = total;
-            SinceStartupTimeStamp = Time.realtimeSinceStartup;
-            UtcTimeStamp = DateTime.UtcNow;
         }
     }
 }
