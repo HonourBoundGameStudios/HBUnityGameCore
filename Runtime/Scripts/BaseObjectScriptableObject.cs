@@ -4,6 +4,7 @@ using UnityEngine.Localization;
 
 namespace HBUnityGameCore
 {
+    [Serializable]
     [CreateAssetMenu(fileName = "Base Object", menuName = "HBUnityGameCore/BaseObject")]
     public class BaseObjectScriptableObject : ScriptableObject
     {
