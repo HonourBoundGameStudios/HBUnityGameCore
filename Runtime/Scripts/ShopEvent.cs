@@ -12,7 +12,7 @@ namespace HBUnityGameCore
 
     public class ShopEvent : IEvent
     {
-        private ShopState shopState;
+        public readonly ShopState shopState;
 
         public bool IsOpen()
         {

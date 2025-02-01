@@ -5,7 +5,9 @@ namespace HBUnityGameCore
         Purchase,
         Sale,
         Deposit,
-        Withdrawal
+        Withdrawal,
+        RequestResourceBalance,
+        ResourceBalance
     }
 
     public class EconomyEvent : IEvent
@@ -25,11 +27,35 @@ namespace HBUnityGameCore
             get;
         }
 
+        public string ResourceName
+        {
+            get;
+        }
+
+        public EconomyEvent(EconomyEventType eventType, string resourceName)
+        {
+            EventType = eventType;
+            ResourceName = resourceName;
+        }
+
+        public EconomyEvent(EconomyEventType eventType, string resourceName, float amount)
+        {
+            EventType = eventType;
+            ResourceName = resourceName;
+            Amount = amount;
+        }
+
+        public EconomyEvent(EconomyEventType eventType, float resourceBalance)
+        {
+            EventType = eventType;
+            Amount = resourceBalance;
+        }
+
         public EconomyEvent(EconomyEventType eventType, Item item, float amount)
         {
             EventType = eventType;
-            Amount = amount;
             TransactionItem = item;
+            Amount = amount;
         }
     }
 }
