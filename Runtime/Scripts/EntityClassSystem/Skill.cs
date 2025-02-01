@@ -20,8 +20,8 @@ namespace HBUnityGameCore
         [SerializeField, Tooltip("The current number of charges the skill has.")]
         private int currentCharges;
 
-        [SerializeField, Tooltip("The base recharge value of the skill.")]
-        public float rechargeValue;
+        [SerializeField, Tooltip("Time it takes to recharge a charge.")]
+        public float timeToGainOneChargeInMs;
 
         [SerializeField, Tooltip("The current recharge timer of the skill.")]
         private float rechargeTimer;
@@ -33,7 +33,7 @@ namespace HBUnityGameCore
         {
             currentCharges = newCharges;
             maxCharges = newMaxCharges;
-            rechargeValue = newRechargeValue;
+            timeToGainOneChargeInMs = newRechargeValue;
             rechargeBooster = booster;
             rechargeTimer = 0f;
         }
@@ -68,10 +68,10 @@ namespace HBUnityGameCore
                 // Advance the recharge timer... accounting for the recharge booster also.
                 rechargeTimer += Time.deltaTime * rechargeBooster;
 
-                if (rechargeTimer >= rechargeValue)
+                if (rechargeTimer >= timeToGainOneChargeInMs)
                 {
                     currentCharges++;
-                    rechargeTimer -= rechargeValue;
+                    rechargeTimer -= timeToGainOneChargeInMs;
                     Debug.Log($"{name} charge gained! Charges available: {currentCharges}");
                 }
             }

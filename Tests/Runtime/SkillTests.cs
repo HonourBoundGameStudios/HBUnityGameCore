@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 namespace HBUnityGameCore
 {
     [TestFixture]
-    public class SkillTests
+    public class SkillTests : MonoBehaviour
     {
         [Test]
         public void Skill_WhenAChargeIsAvailable_CanUsed()
@@ -50,8 +50,14 @@ namespace HBUnityGameCore
             // Arrange
             Skill skill = ScriptableObject.CreateInstance<Skill>();
             skill.Initialize(0, 1, 2);
-            yield return new WaitForSeconds(2);
-            skill.Recharge();
+
+            // Act
+            while (!skill.CanUse())
+            {
+                skill.Recharge();
+                yield return new WaitForEndOfFrame();
+            }
+
             Assert.True(skill.CanUse());
         }
 
@@ -70,17 +76,16 @@ namespace HBUnityGameCore
             Assert.False(skill.CanUse());
         }
 
-        [UnityTest]
-        public IEnumerator Skill_WhenRechargedWithBooster_CanUse()
+        [Test]
+        public void Skill_WhenRechargedWithBooster_CanUse()
         {
             // Arrange
-            float booster = 2;
+            const float booster = 2;
             Skill skill = ScriptableObject.CreateInstance<Skill>();
             skill.Initialize(1, 1, 2, booster);
 
             // Act
             skill.Use();
-            yield return new WaitForSeconds(1);
             skill.Recharge();
 
             // Assert
