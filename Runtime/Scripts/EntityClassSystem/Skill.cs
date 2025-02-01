@@ -1,89 +1,89 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HBUnityGameCore
 {
+    /// <summary>
+    /// A skill is a special ability that a character can use that does consume resources (energy of any kind).
+    /// A skill can have a cooldown time, a number of charges, and a recharge rate.
+    /// A skill can also have a recharge booster. This is a multiplier that improves the recharge time.
+    /// The recharge booster is a value between 1 and X. Anything above 1 will improve the recharge time.
+    /// </summary>
     [Serializable]
     [CreateAssetMenu(fileName = "Skill", menuName = "HBUnityGameCore/Skill")]
     public class Skill : BaseObjectScriptableObject
     {
-        [SerializeField, Tooltip("The base cooldown time of the skill.")]
-        public float baseCooldownTime;
-
         [SerializeField, Tooltip("The maximum number of charges the skill can have.")]
         public int maxCharges;
 
         [SerializeField, Tooltip("The current number of charges the skill has.")]
         private int currentCharges;
 
-        [SerializeField, Tooltip("The next time the skill can be used.")]
-        private float nextUseTime;
-
-        [SerializeField, Tooltip("The base recharge rate of the skill.")]
-        public float baseRechargeRate;
+        [SerializeField, Tooltip("The base recharge value of the skill.")]
+        public float rechargeValue;
 
         [SerializeField, Tooltip("The current recharge timer of the skill.")]
         private float rechargeTimer;
 
-        [field: SerializeField]
-        [field: Tooltip("The multiplier to increase skill power.")]
-        public float PowerBooster
+        [SerializeField, Tooltip("The multiplier to decrease recharge time."), Range(1, float.MaxValue)]
+        public float rechargeBooster;
+
+        public void Initialize(int newCharges, int newMaxCharges, float newRechargeValue, float booster = 1f)
         {
-            set; get;
+            currentCharges = newCharges;
+            maxCharges = newMaxCharges;
+            rechargeValue = newRechargeValue;
+            rechargeBooster = booster;
+            rechargeTimer = 0f;
         }
 
-        [field: SerializeField]
-        [field: Tooltip("The multiplier to decrease recharge time.")]
-        public float RechargeBooster
+        public virtual bool CanUse()
         {
-            set; get;
+            return currentCharges > 0;
         }
 
-        public Skill(float baseCooldownTime, int maxCharges, float baseRechargeRate, float powerBooster = 1f, float rechargeBooster = 1f)
-        {
-            this.baseCooldownTime = baseCooldownTime;
-            this.maxCharges = maxCharges;
-            this.currentCharges = maxCharges;
-            this.baseRechargeRate = baseRechargeRate;
-            this.PowerBooster = powerBooster;
-            this.RechargeBooster = rechargeBooster;
-            this.nextUseTime = 0f;
-            this.rechargeTimer = 0f;
-        }
-
-        public bool CanUse()
-        {
-            return currentCharges > 0 && Time.time >= nextUseTime;
-        }
-
-        public void Use()
+        /// <summary>
+        /// Use the skill charge.
+        /// Remove a charge from the skill and reset the recharge timer.
+        /// </summary>
+        public virtual void Use()
         {
             if (CanUse())
             {
                 currentCharges--;
-                nextUseTime = Time.time + baseCooldownTime / RechargeBooster; // Apply rechargeBooster to cooldown time
-                rechargeTimer = 0f; // Reset recharge timer after use
-                Debug.Log($"{name} used with power booster of {PowerBooster}! Charges left: {currentCharges}");
+                rechargeTimer = 0f;
+                Debug.Log($"{name} used with power booster of {rechargeBooster}! Charges left: {currentCharges}");
             }
         }
-
-        public void Recharge()
+        /// <summary>
+        /// For now, this must be called manually in the Update method of the class that uses the skill or
+        /// at the user's discretion.
+        /// </summary>
+        public virtual void Recharge()
         {
+            // Only recharge if we are not at max charges
             if (currentCharges < maxCharges)
             {
-                rechargeTimer += Time.deltaTime * RechargeBooster; // Apply rechargeBooster to recharge rate
-                if (rechargeTimer >= baseRechargeRate)
+                // Advance the recharge timer... accounting for the recharge booster also.
+                rechargeTimer += Time.deltaTime * rechargeBooster;
+
+                if (rechargeTimer >= rechargeValue)
                 {
                     currentCharges++;
-                    rechargeTimer = 0f;
-                    Debug.Log($"{name} partially recharged! Charges: {currentCharges}");
+                    rechargeTimer -= rechargeValue;
+                    Debug.Log($"{name} charge gained! Charges available: {currentCharges}");
                 }
+            }
+            else
+            {
+                rechargeTimer = 0f;
             }
         }
 
-        public float GetCurrentRechargeValue()
+        public virtual int GetCurrentCharges()
         {
-            return rechargeTimer / baseRechargeRate;
+            return currentCharges;
         }
     }
 }

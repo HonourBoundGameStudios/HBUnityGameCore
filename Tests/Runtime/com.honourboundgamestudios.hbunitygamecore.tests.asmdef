@@ -1,0 +1,11 @@
+{
+    "name": "com.honourboundgamestudios.hbunitygamecore.tests",
+    "rootNamespace": "HBUnityGameCore",
+    "references": [
+        "com.honourboundgamestudios.hbunitygamecore",
+        "Unity.Localization",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}

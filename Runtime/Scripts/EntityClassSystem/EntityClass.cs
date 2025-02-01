@@ -8,8 +8,12 @@ namespace HBUnityGameCore
     [CreateAssetMenu(fileName = "Entity Class", menuName = "HBUnityGameCore/EntityClass")]
     public class EntityClass : BaseObjectScriptableObject
     {
-        [Header("SKILLS")]
-        [SerializeField, Tooltip("The skills that the entity can use.")]
+        // Similar to dungeon & dragons classes
+        [Header("Abilities")]
+        [SerializeField, Tooltip("These are the basic skills that the class can use.")]
         List<Skill> _skills;
+
+        [SerializeField, Tooltip("The spells that the class can use.")]
+        List<Spell> _spells;
     }
 }
