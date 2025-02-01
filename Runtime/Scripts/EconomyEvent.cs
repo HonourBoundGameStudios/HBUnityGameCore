@@ -4,10 +4,10 @@ namespace HBUnityGameCore
     {
         Purchase,
         Sale,
-        Deposit,
-        Withdrawal,
         RequestResourceBalance,
-        ResourceBalance
+        ResourceBalance,
+        ResourceGained,
+        ResourceSpent
     }
 
     public class EconomyEvent : IEvent
