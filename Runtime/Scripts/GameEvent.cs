@@ -1,24 +1,26 @@
-using System;
-using UnityEngine;
-
 namespace HBUnityGameCore
 {
-
     public enum GameEventType
     {
         Begin,
         End,
         Pause,
-        Resume
+        Resume,
+        MainMenuBegin,
+        MainMenuEnd,
+        LevelBegin,
+        LevelEnd,
+        LevelWin,
+        LevelLost
     }
 
     public class GameEvent : IEvent
     {
-        private GameEventType _gameEventType;
+        public readonly GameEventType GameEventType;
 
         public GameEvent(GameEventType gameEventType)
         {
-            _gameEventType = gameEventType;
+            GameEventType = gameEventType;
         }
     }
 }

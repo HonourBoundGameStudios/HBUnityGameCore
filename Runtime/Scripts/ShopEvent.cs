@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace HBUnityGameCore
 {
-
     public enum ShopState
     {
         Opened,
