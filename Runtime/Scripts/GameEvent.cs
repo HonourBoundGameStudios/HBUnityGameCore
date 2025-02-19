@@ -10,7 +10,7 @@ namespace HBUnityGameCore
         MainMenuEnd,
         LevelBegin,
         LevelEnd,
-        LevelWin,
+        LevelWon,
         LevelLost
     }
 
