@@ -7,13 +7,13 @@ namespace HBUnityGameCore
     {
         public void OnEventReceived(IEvent @event)
         {
-            Console.WriteLine("Message received: " + @event);
+            Console.WriteLine("Event received: " + @event);
         }
     }
 
     public class Bus
     {
-        public delegate void EventHandler(IEvent rewardEvent);
+        public delegate void EventHandler(IEvent @event);
 
         // Declare the event using the delegate
         public event EventHandler HandleEvent;
@@ -29,29 +29,21 @@ namespace HBUnityGameCore
         }
 
         // Method to subscribe to the event
-        public void Subscribe(EventHandler messageHandler)
+        public void Subscribe(EventHandler eventHandler)
         {
-            HandleEvent += messageHandler;
+            HandleEvent += eventHandler;
         }
 
         // Method to unsubscribe from the event
-        public void Unsubscribe(EventHandler messageHandler)
+        public void Unsubscribe(EventHandler eventHandler)
         {
-            HandleEvent -= messageHandler;
+            HandleEvent -= eventHandler;
         }
     }
 
     public class GameEventBroadcastManager
     {
-        public readonly Bus GameEventBus = new();
-        public readonly Bus AnalyticsEventBus = new();
-        public readonly Bus RewardEventBus = new();
-        public readonly Bus EconomyEventBus = new();
-        // public Bus WorldEventBus = new();
-        // public Bus PlayerEventBus = new();
-        // public Bus AchievementEventBus = new();
-        // public Bus SocialEventBus = new();
-        // public Bus NotificationEventBus = new();
+        private readonly SerializableDictionary<string, Bus> _buses = new();
 
         private static GameEventBroadcastManager _instance;
         public static GameEventBroadcastManager Instance
@@ -61,49 +53,34 @@ namespace HBUnityGameCore
                 if (_instance == null)
                 {
                     _instance = new GameEventBroadcastManager();
-
-                    if (_instance == null)
-                    {
-                         Debug.LogError("GameEventBroadcastManager instance could not be created.");
-                    }
                 }
-
                 return _instance;
             }
         }
 
-        public void GiveReward(GameRewardType rewardType, uint amount, uint total)
+        // --- The New API: Get any bus by its string name ---
+        /// <summary>
+        /// Gets the event bus for a specific channel, identified by a string key.
+        /// If the bus does not exist, it will be created automatically.
+        /// </summary>
+        /// <param name="busName">The case-sensitive name of the bus to retrieve (e.g., "Game", "Encounter").</param>
+        /// <returns>The requested Bus instance.</returns>
+        public Bus GetBus(string busName)
         {
-            Debug.Log("Reward awarded!");
-            _instance.RewardEventBus.Emit(new RewardEvent(rewardType, amount, total));
-        }
+            // Defensively check for null or empty strings
+            if (string.IsNullOrEmpty(busName))
+            {
+                Debug.LogError("Bus name cannot be null or empty.");
+                return null; // Return null to prevent further errors
+            }
 
-        public void GameBegin()
-        {
-            Debug.Log("Game began!");
-            GameEventBus.Emit(new GameEvent(GameEventType.Begin));
-            AnalyticsEventBus.Emit(new AnalyticEvent());
-        }
-
-        public void GameEnd()
-        {
-            Debug.Log("Game ended!");
-            GameEventBus.Emit(new GameEvent(GameEventType.End));
-            AnalyticsEventBus.Emit(new AnalyticEvent());
-        }
-
-        public void GamePause()
-        {
-            Debug.Log("Game paused!");
-            GameEventBus.Emit(new GameEvent(GameEventType.Pause));
-            AnalyticsEventBus.Emit(new AnalyticEvent());
-        }
-
-        public void GameResume()
-        {
-            Debug.Log("Game resumed!");
-            GameEventBus.Emit(new GameEvent(GameEventType.Resume));
-            AnalyticsEventBus.Emit(new AnalyticEvent());
+            // Check if the bus already exists in our dictionary
+            if (!_buses.ContainsKey(busName))
+            {
+                // If not, create a new one and add it.
+                _buses[busName] = new Bus();
+            }
+            return _buses[busName];
         }
     }
 }
