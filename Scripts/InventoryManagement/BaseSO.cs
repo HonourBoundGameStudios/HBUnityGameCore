@@ -6,7 +6,7 @@ namespace HBUnityGameCore
 {
     [Serializable]
     [CreateAssetMenu(fileName = "Base Object", menuName = "HBUnityGameCore/BaseObject")]
-    public class BaseObjectScriptableObject : ScriptableObject
+    public class BaseSO : ScriptableObject
     {
         [Header("VISUAL REPRESENTATION")]
         [SerializeField, Tooltip("The icon of the item that will be displayed in the inspector ui.")]

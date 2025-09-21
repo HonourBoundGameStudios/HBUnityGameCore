@@ -5,7 +5,7 @@ namespace HBUnityGameCore
 {
     [Serializable]
     [CreateAssetMenu(fileName = "Item", menuName = "HBUnityGameCore/Inventory/Item")]
-    public class Item : BaseObjectScriptableObject
+    public class Item : BaseSO
     {
         [Header("OTHER PROPERTIES")]
         [SerializeField, Tooltip("A single instance of this item can exist in the game.")]

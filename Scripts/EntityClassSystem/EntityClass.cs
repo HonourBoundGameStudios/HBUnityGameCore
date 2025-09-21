@@ -6,7 +6,7 @@ namespace HBUnityGameCore
 {
     [Serializable]
     [CreateAssetMenu(fileName = "Entity Class", menuName = "HBUnityGameCore/EntityClass")]
-    public class EntityClass : BaseObjectScriptableObject
+    public class EntityClass : BaseSO
     {
         // Similar to dungeon & dragons classes
         [Header("Abilities")]

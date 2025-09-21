@@ -12,7 +12,7 @@ namespace HBUnityGameCore
     /// </summary>
     [Serializable]
     [CreateAssetMenu(fileName = "Skill", menuName = "HBUnityGameCore/Skill")]
-    public class Skill : BaseObjectScriptableObject
+    public class Skill : BaseSO
     {
         [SerializeField, Tooltip("The maximum number of charges the skill can have.")]
         public int maxCharges;
