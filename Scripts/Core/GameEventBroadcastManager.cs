@@ -1,63 +1,26 @@
-using System;
 using UnityEngine;
 
 namespace HBUnityGameCore
 {
-    public class Receiver
-    {
-        public void OnEventReceived(IEvent @event)
-        {
-            Console.WriteLine("Event received: " + @event);
-        }
-    }
 
-    public class Bus
-    {
-        public delegate void EventHandler(IEvent @event);
-
-        // Declare the event using the delegate
-        public event EventHandler HandleEvent;
-
-        // Method to raise the event
-        public void Emit(IEvent @event)
-        {
-            // Check if there are any subscribers
-            if (HandleEvent != null)
-            {
-                HandleEvent(@event);
-            }
-        }
-
-        // Method to subscribe to the event
-        public void Subscribe(EventHandler eventHandler)
-        {
-            HandleEvent += eventHandler;
-        }
-
-        // Method to unsubscribe from the event
-        public void Unsubscribe(EventHandler eventHandler)
-        {
-            HandleEvent -= eventHandler;
-        }
-    }
-
-    public class GameEventBroadcastManager
+    public class GameEventBroadcastManager : MonoBehaviour
     {
         private readonly SerializableDictionary<string, Bus> _buses = new();
 
-        private static GameEventBroadcastManager _instance;
-        public static GameEventBroadcastManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new GameEventBroadcastManager();
-                }
-                return _instance;
-            }
-        }
+        public static GameEventBroadcastManager Instance { get; private set; }
 
+        void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject); // Prevent duplicates
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Optional: persist across scenes
+        }
+        
         // --- The New API: Get any bus by its string name ---
         /// <summary>
         /// Gets the event bus for a specific channel, identified by a string key.
@@ -80,6 +43,7 @@ namespace HBUnityGameCore
                 // If not, create a new one and add it.
                 _buses[busName] = new Bus();
             }
+            
             return _buses[busName];
         }
     }
