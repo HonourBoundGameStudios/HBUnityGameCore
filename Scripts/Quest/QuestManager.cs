@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace HBUnityGameCore.QuestSystem
+namespace VRGame.QuestSystem
 {
     // =============================================================================
     // ENUMS AND DATA STRUCTURES
@@ -55,13 +55,6 @@ namespace HBUnityGameCore.QuestSystem
         Progressive
     }
     
-    public enum ObjectiveCompletionOrder
-    {
-        Sequential,
-        Parallel,
-        AnyOrder
-    }
-
     // =============================================================================
     // QUEST EVENTS
     // =============================================================================
@@ -88,7 +81,7 @@ namespace HBUnityGameCore.QuestSystem
         
         public static void ClearAllSubscribers()
         {
-            OnObjectiveCompleted = null;
+            OnQuestStarted = null;
             OnQuestCompleted = null;
             OnQuestFailed = null;
             OnQuestAbandoned = null;
@@ -213,10 +206,17 @@ namespace HBUnityGameCore.QuestSystem
             return targetAmount > 0 ? (float)currentProgress / targetAmount : 0f;
         }
         
-        // Override this for custom objective logic
+        // Override this for custom objective logic - ONLY checks if condition is met
         public virtual bool CheckCondition(Dictionary<string, object> context)
         {
             return CanComplete();
+        }
+        
+        // Override this to handle context-based progress updates
+        public virtual bool TryUpdateFromContext(Dictionary<string, object> context)
+        {
+            // Base implementation does nothing - override in specific objective types
+            return false;
         }
     }
     
@@ -236,6 +236,16 @@ namespace HBUnityGameCore.QuestSystem
         }
         
         public override bool CheckCondition(Dictionary<string, object> context)
+        {
+            if (context.ContainsKey("itemId") && context.ContainsKey("amount"))
+            {
+                string contextItemId = context["itemId"].ToString();
+                return contextItemId == itemId && currentProgress < targetAmount;
+            }
+            return false;
+        }
+        
+        public override bool TryUpdateFromContext(Dictionary<string, object> context)
         {
             if (context.ContainsKey("itemId") && context.ContainsKey("amount"))
             {
@@ -278,10 +288,16 @@ namespace HBUnityGameCore.QuestSystem
                 bool enemyMatches = contextEnemyType == enemyType;
                 bool areaMatches = string.IsNullOrEmpty(areaId) || contextArea == areaId;
                 
-                if (enemyMatches && areaMatches)
-                {
-                    return UpdateProgress(1);
-                }
+                return enemyMatches && areaMatches && currentProgress < targetAmount;
+            }
+            return false;
+        }
+        
+        public override bool TryUpdateFromContext(Dictionary<string, object> context)
+        {
+            if (CheckCondition(context))
+            {
+                return UpdateProgress(1);
             }
             return false;
         }
@@ -306,10 +322,16 @@ namespace HBUnityGameCore.QuestSystem
             if (context.ContainsKey("targetId"))
             {
                 string contextTargetId = context["targetId"].ToString();
-                if (contextTargetId == targetId)
-                {
-                    return UpdateProgress(1);
-                }
+                return contextTargetId == targetId && !isCompleted;
+            }
+            return false;
+        }
+        
+        public override bool TryUpdateFromContext(Dictionary<string, object> context)
+        {
+            if (CheckCondition(context))
+            {
+                return UpdateProgress(1);
             }
             return false;
         }
@@ -341,11 +363,16 @@ namespace HBUnityGameCore.QuestSystem
             {
                 Vector3 playerPos = (Vector3)context["playerPosition"];
                 float distance = Vector3.Distance(playerPos, targetPosition);
-                
-                if (distance <= radius)
-                {
-                    return UpdateProgress(1);
-                }
+                return distance <= radius && !isCompleted;
+            }
+            return false;
+        }
+        
+        public override bool TryUpdateFromContext(Dictionary<string, object> context)
+        {
+            if (CheckCondition(context))
+            {
+                return UpdateProgress(1);
             }
             return false;
         }
@@ -372,8 +399,7 @@ namespace HBUnityGameCore.QuestSystem
         
         // Objectives
         public List<QuestObjective> objectives = new List<QuestObjective>();
-        public ObjectiveCompletionOrder completionOrder;
-        
+
         // Rewards
         public List<QuestReward> rewards = new List<QuestReward>();
         
@@ -383,7 +409,7 @@ namespace HBUnityGameCore.QuestSystem
         
         // Configuration
         public bool autoAccept;
-        public bool autoComplete;
+        public bool autoComplete; // if true, quest completes automatically when objectives are done
         public DateTime? expirationDate;
         public bool isRepeatable;
         public Dictionary<string, object> customData = new Dictionary<string, object>();
@@ -399,7 +425,6 @@ namespace HBUnityGameCore.QuestSystem
             this.description = description;
             this.type = questType;
             this.status = QuestStatus.NotStarted;
-            this.completionOrder = ObjectiveCompletionOrder.AnyOrder;
             this.priority = 0;
             this.requiredLevel = 1;
         }
@@ -450,7 +475,7 @@ namespace HBUnityGameCore.QuestSystem
             
             foreach (var objective in objectives)
             {
-                if (!objective.isCompleted && objective.CheckCondition(context))
+                if (!objective.isCompleted && objective.TryUpdateFromContext(context))
                 {
                     QuestEvents.ObjectiveCompleted(this, objective);
                     anyObjectiveUpdated = true;
@@ -468,20 +493,7 @@ namespace HBUnityGameCore.QuestSystem
         {
             if (status != QuestStatus.Active) return;
             
-            bool canComplete = false;
-            
-            switch (completionOrder)
-            {
-                case ObjectiveCompletionOrder.Sequential:
-                    canComplete = CheckSequentialCompletion();
-                    break;
-                case ObjectiveCompletionOrder.Parallel:
-                    canComplete = objectives.Where(o => o.isRequired).All(o => o.isCompleted);
-                    break;
-                case ObjectiveCompletionOrder.AnyOrder:
-                    canComplete = objectives.Where(o => o.isRequired).All(o => o.isCompleted);
-                    break;
-            }
+            bool canComplete = objectives.Where(o => o.isRequired).All(o => o.isCompleted);
             
             if (canComplete)
             {
@@ -571,22 +583,7 @@ namespace HBUnityGameCore.QuestSystem
         {
             var activeObjectives = new List<QuestObjective>();
             
-            if (completionOrder == ObjectiveCompletionOrder.Sequential)
-            {
-                var requiredObjectives = objectives.Where(o => o.isRequired).ToList();
-                var firstIncomplete = requiredObjectives.FirstOrDefault(o => !o.isCompleted);
-                if (firstIncomplete != null)
-                {
-                    activeObjectives.Add(firstIncomplete);
-                }
-                
-                // Add all non-required objectives
-                activeObjectives.AddRange(objectives.Where(o => !o.isRequired && !o.isCompleted));
-            }
-            else
-            {
-                activeObjectives.AddRange(objectives.Where(o => !o.isCompleted));
-            }
+            activeObjectives.AddRange(objectives.Where(o => !o.isCompleted));
             
             return activeObjectives.Where(o => o.isVisible).ToList();
         }
@@ -644,12 +641,6 @@ namespace HBUnityGameCore.QuestSystem
         public QuestBuilder SetRepeatable(bool repeatable)
         {
             quest.isRepeatable = repeatable;
-            return this;
-        }
-        
-        public QuestBuilder SetCompletionOrder(ObjectiveCompletionOrder order)
-        {
-            quest.completionOrder = order;
             return this;
         }
         
@@ -1017,8 +1008,7 @@ namespace HBUnityGameCore.QuestSystem
                 requiredLevel = originalQuest.requiredLevel,
                 autoAccept = originalQuest.autoAccept,
                 autoComplete = originalQuest.autoComplete,
-                isRepeatable = originalQuest.isRepeatable,
-                completionOrder = originalQuest.completionOrder
+                isRepeatable = originalQuest.isRepeatable
             };
             
             // Copy objectives (create new instances)
@@ -1473,7 +1463,6 @@ namespace HBUnityGameCore.QuestSystem
             return new QuestBuilder("VR Tutorial", "Learn the basics of VR interaction", QuestType.Tutorial)
                 .SetAutoAccept(true)
                 .SetAutoComplete(false) // Player needs to manually complete
-                .SetCompletionOrder(ObjectiveCompletionOrder.Sequential)
                 .AddInteractionObjective("tutorial_button", "Press the Tutorial Button", "Find and press the glowing button")
                 .AddCollectionObjective("tutorial_gem", 1, "Collect the Tutorial Gem", "Pick up the floating gem")
                 .AddLocationObjective("finish_area", new Vector3(10, 0, 10), 2f, "Reach the Finish Area", "Walk to the marked circle")
@@ -1500,7 +1489,6 @@ namespace HBUnityGameCore.QuestSystem
         public static Quest CreateMultiStageQuest()
         {
             return new QuestBuilder("The Ancient Artifact", "Recover the lost artifact", QuestType.MainStory)
-                .SetCompletionOrder(ObjectiveCompletionOrder.Sequential)
                 .AddInteractionObjective("sage_npc", "Speak to the Sage", "Talk to the village sage")
                 .AddCollectionObjective("ancient_key", 1, "Find the Ancient Key", "Locate the key to the temple")
                 .AddLocationObjective("ancient_temple", new Vector3(50, 0, 50), 5f, "Reach the Ancient Temple", "Travel to the temple location")
