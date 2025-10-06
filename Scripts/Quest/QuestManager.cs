@@ -1177,6 +1177,11 @@ namespace VRGame.QuestSystem
             
             Debug.Log($"Loaded quest save data: {activeQuests.Count} active, {completedQuests.Count} completed");
         }
+        
+        public void AddRange(Quest[] quests)
+        {
+            allQuests.AddRange(quests);
+        }
     }
 
     // =============================================================================
