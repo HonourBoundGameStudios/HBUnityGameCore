@@ -784,7 +784,7 @@ namespace VRGame.QuestSystem
         {
             // This would typically load from ScriptableObjects, JSON files, or a database
             // For now, we'll create some example quests
-            CreateExampleQuests();
+            // CreateExampleQuests();
             
             // Build quest database
             foreach (var quest in allQuests)
