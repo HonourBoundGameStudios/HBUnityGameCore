@@ -761,9 +761,6 @@ namespace VRGame.QuestSystem
             QuestEvents.OnQuestAbandoned += HandleQuestAbandoned;
             QuestEvents.OnObjectiveCompleted += HandleObjectiveCompleted;
             
-            // Load quests from data (ScriptableObjects, JSON, etc.)
-            LoadQuests();
-            
             // Initialize player context
             UpdatePlayerContext();
             
@@ -779,8 +776,8 @@ namespace VRGame.QuestSystem
             QuestEvents.OnQuestAbandoned -= HandleQuestAbandoned;
             QuestEvents.OnObjectiveCompleted -= HandleObjectiveCompleted;
         }
-        
-        private void LoadQuests()
+
+        public void LoadQuests()
         {
             // This would typically load from ScriptableObjects, JSON files, or a database
             // For now, we'll create some example quests
