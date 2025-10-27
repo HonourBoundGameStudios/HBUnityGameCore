@@ -714,6 +714,12 @@ namespace VRGame.QuestSystem
         {
             return quest;
         }
+        
+        public QuestBuilder SetId(string questId)
+        {
+            quest.id = questId;
+            return this;
+        }
     }
 
     // =============================================================================
