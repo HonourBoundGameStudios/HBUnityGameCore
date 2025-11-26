@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VRGame.QuestSystem
+namespace QuestSystem
 {
     public enum RewardType
     {

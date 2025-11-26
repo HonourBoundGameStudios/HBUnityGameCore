@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VRGame.QuestSystem
+namespace QuestSystem
 {
     public static class QuestEvents
     {

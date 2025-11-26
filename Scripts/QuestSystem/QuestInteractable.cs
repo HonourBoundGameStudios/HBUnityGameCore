@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 
-namespace VRGame.QuestSystem
+namespace QuestSystem
 {
+
+    /// <summary>
+    /// Component to mark an object as interactable for quest purposes.
+    /// </summary>
     public class QuestInteractable : MonoBehaviour
     {
         [Header("Quest Settings")]

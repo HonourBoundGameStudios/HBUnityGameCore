@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VRGame.QuestSystem
+namespace QuestSystem
 {
     public class QuestCollectible : MonoBehaviour
     {

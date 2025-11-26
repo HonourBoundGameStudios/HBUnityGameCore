@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace VRGame.QuestSystem
+namespace QuestSystem
 {
     [System.Serializable]
     public class Quest

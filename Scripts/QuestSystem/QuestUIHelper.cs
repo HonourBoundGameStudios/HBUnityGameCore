@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace VRGame.QuestSystem
+namespace QuestSystem
 {
     public class QuestUIHelper : MonoBehaviour
     {

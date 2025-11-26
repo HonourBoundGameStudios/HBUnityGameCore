@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VRGame.QuestSystem
+namespace QuestSystem
 {
     // Component for area detection
     public class AreaTrigger : MonoBehaviour
@@ -42,6 +42,7 @@ namespace VRGame.QuestSystem
             // This would integrate with your area/zone system
             // For example, check what area trigger the enemy is in
             var areaCollider = GetComponentInParent<AreaTrigger>();
+            
             return areaCollider?.areaId ?? "unknown";
         }
     }

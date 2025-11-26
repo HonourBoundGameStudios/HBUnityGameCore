@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace VRGame.QuestSystem
+namespace QuestSystem
 {
     public class QuestBuilder
     {
@@ -60,27 +60,33 @@ namespace VRGame.QuestSystem
             return this;
         }
         
-        public QuestBuilder AddCollectionObjective(string itemId, int amount, string title = "", string description = "")
+        public QuestBuilder AddCollectionObjective(ObjectiveKey key, string itemId, int amount, string title = "", string description = "")
         {
-            quest.objectives.Add(new CollectionObjective(itemId, amount, title, description));
+            quest.objectives.Add(new CollectionObjective(key, itemId, amount, title, description));
             return this;
         }
         
-        public QuestBuilder AddKillObjective(string enemyType, int amount, string areaId = "", string title = "", string description = "")
+        public QuestBuilder AddKillObjective(ObjectiveKey key, string enemyType, int amount, string areaId = "", string title = "", string description = "")
         {
-            quest.objectives.Add(new KillObjective(enemyType, amount, areaId, title, description));
+            quest.objectives.Add(new KillObjective(key, enemyType, amount, areaId, title, description));
             return this;
         }
         
-        public QuestBuilder AddInteractionObjective(string targetId, string title = "", string description = "")
+        public QuestBuilder AddInteractionObjective(ObjectiveKey key, string targetId, string title = "", string description = "")
         {
-            quest.objectives.Add(new InteractionObjective(targetId, title, description));
+            quest.objectives.Add(new InteractionObjective(key, targetId, title, description));
             return this;
         }
         
-        public QuestBuilder AddLocationObjective(string locationId, Vector3 position, float radius = 5f, string title = "", string description = "")
+        public QuestBuilder AddLocationObjective(ObjectiveKey key, string locationId, Vector3 position, float radius = 5f, string title = "", string description = "")
         {
-            quest.objectives.Add(new LocationObjective(locationId, position, radius, title, description));
+            quest.objectives.Add(new LocationObjective(key, locationId, position, radius, title, description));
+            return this;
+        }
+        
+        public QuestBuilder AddDeliveryObjective(ObjectiveKey key, string itemId, string destinationId, int amount, string title = "", string description = "")
+        {
+            quest.objectives.Add(new DeliveryObjective(key, itemId, destinationId, amount, title, description));
             return this;
         }
         

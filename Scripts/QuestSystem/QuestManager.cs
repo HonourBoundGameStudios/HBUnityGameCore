@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace VRGame.QuestSystem
+namespace QuestSystem
 {
     // =============================================================================
     // ENUMS AND DATA STRUCTURES
@@ -54,7 +54,7 @@ namespace VRGame.QuestSystem
     [System.Serializable]
     public class ObjectiveState
     {
-        public string objectiveId;
+        public ObjectiveKey objectiveKey;
         public int currentProgress;
         public bool isCompleted;
     }
@@ -136,58 +136,6 @@ namespace VRGame.QuestSystem
                     availableQuests.Add(quest);
                 }
             }
-        }
-        
-        private void CreateExampleQuests()
-        {
-            // Example: Tutorial Quest Chain
-            var tutorialQuest1 = new QuestBuilder("Welcome to VR", "Learn the basics of VR interaction", QuestType.Tutorial)
-                .SetAutoAccept(true)
-                .SetAutoComplete(true)
-                .AddInteractionObjective("tutorial_orb", "Pick up the glowing orb", "Use your controller to grab the orb")
-                .AddLocationObjective("tutorial_zone", Vector3.zero, 3f, "Move to the marked area", "Walk to the glowing circle")
-                .AddExperienceReward(100, "Tutorial completion bonus")
-                .AddFollowUpQuest("combat_tutorial")
-                .Build();
-            
-            var tutorialQuest2 = new QuestBuilder("Combat Training", "Learn to fight enemies", QuestType.Tutorial)
-                .SetAutoAccept(true)
-                .AddRequiredQuest(tutorialQuest1.id)
-                .AddKillObjective("training_dummy", 3, "training_room", "Destroy training dummies", "Use your weapon to destroy 3 training dummies")
-                .AddItemReward("basic_sword", 1, "Your first weapon")
-                .AddExperienceReward(150)
-                .Build();
-            
-            // Example: Collection Quest
-            var gatheringQuest = new QuestBuilder("Resource Gathering", "Collect materials for crafting", QuestType.SideQuest)
-                .AddCollectionObjective("wood", 10, "Gather Wood", "Collect wood from trees")
-                .AddCollectionObjective("stone", 5, "Gather Stone", "Mine stone from rocks")
-                .AddCurrencyReward("gold", 100)
-                .AddItemReward("crafting_recipe_basic", 1, "Basic Crafting Recipe")
-                .Build();
-            
-            // Example: Kill Quest with Area Restriction
-            var huntingQuest = new QuestBuilder("Wolf Hunt", "Clear wolves from the forest", QuestType.SideQuest)
-                .SetRequiredLevel(5)
-                .AddKillObjective("wolf", 8, "dark_forest", "Hunt Forest Wolves", "Eliminate 8 wolves in the Dark Forest")
-                .AddCurrencyReward("gold", 250)
-                .AddItemReward("wolf_pelt", 3, "Wolf Pelts")
-                .AddExperienceReward(300)
-                .Build();
-            
-            // Example: Daily Quest
-            var dailyQuest = new QuestBuilder("Daily Training", "Complete daily combat training", QuestType.Daily)
-                .SetRepeatable(true)
-                .SetExpiration(DateTime.Now.AddDays(1))
-                .AddKillObjective("any", 15, "", "Defeat any enemies", "Kill 15 enemies of any type")
-                .AddCurrencyReward("gold", 50)
-                .AddExperienceReward(100)
-                .Build();
-            
-            // Set up quest chain relationships
-            tutorialQuest2.previousQuestId = tutorialQuest1.id;
-            
-            allQuests.AddRange(new[] { tutorialQuest1, tutorialQuest2, gatheringQuest, huntingQuest, dailyQuest });
         }
         
         public void UpdatePlayerContext()
@@ -360,11 +308,11 @@ namespace VRGame.QuestSystem
                 {
                     case ObjectiveType.Collection:
                         var collectionObj = originalObjective as CollectionObjective;
-                        newObjective = new CollectionObjective(collectionObj.itemId, collectionObj.targetAmount, collectionObj.title, collectionObj.description);
+                        newObjective = new CollectionObjective(originalObjective.key, collectionObj.itemId, collectionObj.targetAmount, collectionObj.title, collectionObj.description);
                         break;
                     case ObjectiveType.Kill:
                         var killObj = originalObjective as KillObjective;
-                        newObjective = new KillObjective(killObj.enemyType, killObj.targetAmount, killObj.areaId, killObj.title, killObj.description);
+                        newObjective = new KillObjective(originalObjective.key, killObj.enemyType, killObj.targetAmount, killObj.areaId, killObj.title, killObj.description);
                         break;
                     // Add other objective types...
                 }
@@ -444,6 +392,8 @@ namespace VRGame.QuestSystem
         }
         
         // Save/Load functionality
+
+        // TODO
         public QuestSaveData GetSaveData()
         {
             return new QuestSaveData
@@ -458,7 +408,7 @@ namespace VRGame.QuestSystem
                     completedAt = q.completedAt,
                     objectiveStates = q.objectives.Select(o => new ObjectiveState
                     {
-                        objectiveId = o.id,
+                        objectiveKey = o.key,
                         currentProgress = o.currentProgress,
                         isCompleted = o.isCompleted
                     }).ToList()
@@ -466,6 +416,7 @@ namespace VRGame.QuestSystem
             };
         }
         
+        // TODO
         public void LoadSaveData(QuestSaveData saveData)
         {
             if (saveData == null) return;
@@ -488,7 +439,8 @@ namespace VRGame.QuestSystem
                     // Restore objective states
                     foreach (var objState in questState.objectiveStates)
                     {
-                        var objective = quest.objectives.FirstOrDefault(o => o.id == objState.objectiveId);
+                        var objective = quest.objectives.FirstOrDefault(o => o.key == objState.objectiveKey);
+                        
                         if (objective != null)
                         {
                             objective.currentProgress = objState.currentProgress;
